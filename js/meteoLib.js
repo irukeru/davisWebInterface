@@ -1,0 +1,312 @@
+
+pathArray = window.location.href.split( '/' );
+protocol = pathArray[0];
+host = pathArray[2];
+url = protocol + '//' + host;
+dateArray = [];
+delayValue = 100000;
+var sampleDateVar =  72000;// sec for hour
+
+/*
+$( document ).ready(function(){
+	$("#placeholder_1").resize(function () {
+			var xaxisLabel = $(".xaxisLabel_1");
+			xaxisLabel.css("margin-top", $("#placeholder_1").height() / 2);
+			xaxisLabel.css("margin-left", $("#placeholder_1").width() / 2 - 20);
+	});
+	
+	$("#placeholder_3").resize(function () {
+			var xaxisLabel = $(".xaxisLabel_2");
+			xaxisLabel.css("margin-top", $("#placeholder_3").height() / 2);
+			xaxisLabel.css("margin-left", $("#placeholder_3").width() / 2 - 20);
+	});	
+	
+	$('#placeholder_arch_1').resize(function () {
+			var xaxisLabel = $(".xaxisLabel_arch_1");
+			xaxisLabel.css("margin-top", $("#placeholder_arch_1").height() / 2);
+			xaxisLabel.css("margin-left", $("#placeholder_arch_1").width() / 2 - 20);
+	});
+	
+	$('#placeholder_arch_3').resize(function () {
+			var xaxisLabel = $(".xaxisLabel_arch_3");
+			xaxisLabel.css("margin-top", $("#placeholder_arch_3").height() / 2);
+			xaxisLabel.css("margin-left", $("#placeholder_arch_3").width() / 2 - 20);
+	});	
+
+	$(".left-container").resizable({
+        	maxWidth: 1000,
+           	maxHeight: 700,
+            minWidth: 400,
+            minHeight: 200
+	});
+
+	$( "#1_hour" ).click(function(event) {
+		sampleDateVar = 10000; // change
+		getDataGraphWithTime(sampleDateVar);
+	});
+
+	$( "#24_hour" ).click(function(event) {
+		sampleDateVar = 1000000;
+		getDataGraphWithTime(sampleDateVar);
+	});
+
+	$( "#48_hour" ).click(function(event) {
+		sampleDateVar = 2000000;
+		getDataGraphWithTime(sampleDateVar);
+	});
+
+	$( "#72_hour" ).click(function(event) {
+		sampleDateVar = 3000000;
+		getDataGraphWithTime(sampleDateVar);
+	});
+	
+	$( "#archive" ).click(function() {
+		$.fancybox.open({
+			href : 'archive_view.php',
+			type : 'iframe',
+			padding : 2,
+			width: parseInt($(document).width()*0.8),
+			height: parseInt($(document).height() * 0.8),
+			autoResize: true
+		});
+	});	
+});
+
+*/
+
+function archiveButtonOnClick(buttonValue) {
+		console.log(buttonValue);
+		document.location = "/archive?value=" + buttonValue;
+}
+
+function getTime(date) {
+	sec = date % 100;
+	min = parseInt(((date - sec) %10000) / 100, 10);
+	hour = parseInt(((date - sec - min) % 1000000) / 10000, 10);
+	day = parseInt(((date - sec - min - hour) % 100000000) / 1000000, 10);
+	month = parseInt(((date - sec - min - hour - day) % 10000000000) / 100000000, 10);
+	year = parseInt(((date - sec - min - hour - day - month) % 100000000000000) / 10000000000, 10);
+	
+	return [year, month, day, hour, min, sec];
+}
+
+function toMilSec(date) {
+	dateArray = getTime(date);
+	d = new Date(parseInt(dateArray[0]), parseInt(dateArray[1]) - 1 , parseInt(dateArray[2]), parseInt(dateArray[3]), parseInt(dateArray[4]), parseInt(dateArray[5]));
+	return parseInt(d.getTime());
+}
+
+function getClientTime() {
+	var date = new Date();
+	
+	year = date.getYear() + 1900 - 1;
+	month = date.getMonth() + 1 + 11;
+	day = date.getDate() + 19;
+	hour = date.getHours();
+	minutes = date.getMinutes();
+	seconds = date.getSeconds();
+
+	if (month < 10)
+		month = "0" + month;
+	if (day < 10)
+		day = "0" + day;
+	if (hour < 10)
+		hour = "0" + hour;
+	if (minutes < 10) 
+		minutes = "0" + minutes;
+	if (seconds < 10)
+		seconds = "0" + seconds;
+
+	result = "" + year + month + day + hour + minutes + seconds;
+console.log(result);
+	return result;
+}
+
+function getFloatTime() {
+	var date = new Date();
+        hour = date.getHours();
+        minutes = date.getMinutes();
+        seconds = date.getSeconds();
+
+	floatTime = hour + (minutes + seconds / 60) / 60;
+
+	return floatTime; 	
+}
+
+function getDataGraphWithTime(timeVar) {
+		sampleDateVar = timeVar;
+        var request, response;
+        var result = [];
+	var resultHum = [];
+	var resultPress = [];
+	var resultWindSpeed = [];
+
+        var newUrl = '/getGraphWithTime.php?value=' + timeVar;
+        var data =  $.ajax({
+                url: newUrl,
+                data: request,
+                dataType: "json",
+                method: "post",
+				async: false,
+      	 	success: function(data) {
+			
+			var i = 0;
+			
+			if (data == false) {
+				document.getElementById( "sqmStatus" ).innerHTML  = "<font color = \"green\" size = \"6\">Status   :  No data to display</font>";
+				return;
+			}
+			
+			var averageTemp = 0;
+			var averageHum = 0;
+			var averagePress = 0;
+			var averageWindSpeed = 0;
+
+	   		for(i; i < data.length; i++) {
+   				result.push([toMilSec(data[i][3]), parseFloat(data[i][0])]);
+				resultHum.push([toMilSec(data[i][3]), parseFloat(data[i][1])]);
+				resultPress.push([toMilSec(data[i][3]), parseFloat(data[i][2])]);
+				resultWindSpeed.push([toMilSec(data[i][3]), parseFloat(data[i][4])]);
+				averageTemp = parseFloat(averageTemp) + parseFloat(data[i][0]);
+				averageHum = parseFloat(averageHum) + parseFloat(data[i][1]);
+				averagePress = parseFloat(averagePress) + parseFloat(data[i][2]);
+				averageWindSpeed = parseFloat(averageWindSpeed) + parseFloat(data[i][4]);
+	   		}
+
+			averageTemp = (averageTemp / data.length).toPrecision(4);
+			averageHum = (averageHum / data.length).toPrecision(4);
+			averagePress = (averagePress / data.length).toPrecision(5);
+			averageWindSpeed = (averageWindSpeed / data.length).toPrecision(3);
+	   		
+	   		var magValue  = parseFloat(data[i-1][0]);
+			var lastUpdate = data[i-1][3];
+			
+			if (isNaN(magValue))
+				magValue = 0;
+
+			var clientTime = getClientTime();
+
+	   		
+	   		document.getElementById( "outsideTemp" ).innerHTML  = magValue  + " &degC ";
+	   		document.getElementById( "outsideTempAv" ).innerHTML  = averageTemp  + " &degC ";
+
+			document.getElementById( "hummidity" ).innerHTML = data[i-1][1] + " %";
+			document.getElementById( "hummidityAv" ).innerHTML = averageHum + " %";
+
+			document.getElementById( "pressure" ).innerHTML = data[i-1][2] + " mBar";
+			document.getElementById( "pressureAv" ).innerHTML = averagePress + " mBar";
+
+			document.getElementById( "windSpeed" ).innerHTML = data[i-1][4] + " km/h";
+			document.getElementById( "windSpeedAv" ).innerHTML = averageWindSpeed + " km/h";
+
+			// GRAPH
+   			dateVal = getTime(data[0][3]);
+			dateValSwap = getTime(clientTime);
+
+   			resultData = [ { data: result, points: { symbol: "circle", radius : 1.5 }, color: "#FF0000"} ];
+	   		console.log(result.length);
+			var plot = $.plot("#placeholder_1", resultData , {
+				points: {
+					show: true,
+					radius: 1
+				}, yaxis: {
+					
+				}, xaxis: {
+					show: true,
+					mode: "time",
+					timezone: "browser",
+					min: (new Date(parseInt(dateVal[0]), parseInt(dateVal[1]) - 1, parseInt(dateVal[2]), parseInt(dateVal[3]), parseInt(dateVal[4]))).getTime(),
+					max: (new Date(parseInt(dateVal[0]), parseInt(dateVal[1]) - 1, parseInt(dateVal[2] + 20), parseInt(dateVal[3]), parseInt(dateVal[4]))).getTime()
+//					max: (new Date()).getTime()
+				}, grid: {
+					hoverable: true
+				}
+			});	
+			var yaxisLabel = $("<div class='axisLabel yaxisLabel'></div>").text("Sıcaklık (Celcius)").appendTo("#placeholder_1");
+			yaxisLabel.css("margin-top", yaxisLabel.width() / 2 - 10);
+			
+			var xaxisLabel = $("<div class='axisLabel xaxisLabel xaxisLabel_1'></div>").text("Zaman (Saat / Gün)").appendTo("#placeholder_1");
+			xaxisLabel.css("margin-top", $("#placeholder_1").height() / 2);
+			xaxisLabel.css("margin-left", $("#placeholder_1").width() / 2 - 20);
+
+   			resultData = [ { data: resultHum, points: { symbol: "circle", radius : 1.0 }, label: "Hummidity : " + data[i-1][1] + " %"} ];
+                        var plot = $.plot("#placeholder_3", resultData , {
+                                points: {
+                                        show: true,
+                                        radius: 1
+                                }, yaxis: {
+
+                                }, xaxis: {
+                                        show: true,
+                                        mode: "time",
+                                        timezone: "browser",
+                                        min: (new Date(parseInt(dateVal[0]), parseInt(dateVal[1]) - 1, parseInt(dateVal[2]), parseInt(dateVal[3]), parseInt(dateVal[4]))).getTime(),
+                                        max: (new Date(parseInt(dateVal[0]), parseInt(dateVal[1]) - 1, parseInt(dateVal[2] + 20), parseInt(dateVal[3]), parseInt(dateVal[4]))).getTime()
+                                }, grid: {
+                                        hoverable: true
+                                }
+                        });
+                        var yaxisLabel = $("<div class='axisLabel yaxisLabel'></div>").text("Hum. (%)").appendTo("#placeholder_3");
+                        yaxisLabel.css("margin-top", yaxisLabel.width() / 2 - 10);
+
+                        var xaxisLabel = $("<div class='axisLabel xaxisLabel xaxisLabel_1'></div>").text("Zaman (Saat / Gün)").appendTo("#placeholder_3");
+                        xaxisLabel.css("margin-top", $("#placeholder_3").height() / 2);
+                        xaxisLabel.css("margin-left", $("#placeholder_3").width() / 2 - 20);
+
+   			resultData = [ { data: resultPress, points: { symbol: "circle", radius : 1.0 }, label: "Pressure : " + data[i-1][2] + " mBar"} ];
+                        var plot = $.plot("#placeholder_2", resultData , {
+                                points: {
+                                        show: true,
+                                        radius: 1
+                                }, yaxis: {
+
+                                }, xaxis: {
+                                        show: true,
+                                        mode: "time",
+                                        timezone: "browser",
+                                        min: (new Date(parseInt(dateVal[0]), parseInt(dateVal[1]) - 1, parseInt(dateVal[2]), parseInt(dateVal[3]), parseInt(dateVal[4]))).getTime(),
+                                        max: (new Date(parseInt(dateVal[0]), parseInt(dateVal[1]) - 1, parseInt(dateVal[2] + 20), parseInt(dateVal[3]), parseInt(dateVal[4]))).getTime()
+                                }, grid: {
+                                        hoverable: true
+                                }
+                        });
+                        var yaxisLabel = $("<div class='axisLabel yaxisLabel'></div>").text("Pressure (mBar)").appendTo("#placeholder_2");
+                        yaxisLabel.css("margin-top", yaxisLabel.width() / 2 - 10);
+
+                        var xaxisLabel = $("<div class='axisLabel xaxisLabel xaxisLabel_1'></div>").text("Zaman (Saat / Gün)").appendTo("#placeholder_2");
+                        xaxisLabel.css("margin-top", $("#placeholder_2").height() / 2);
+                        xaxisLabel.css("margin-left", $("#placeholder_2").width() / 2 - 20);
+
+                        resultData = [ { data: resultWindSpeed, points: { symbol: "circle", radius : 1.0 }, label: "Wind Speed : " + data[i-1][4] + " km/h"} ];
+                        var plot = $.plot("#placeholder_4", resultData , {
+                                points: {
+                                        show: true,
+                                        radius: 1
+                                }, yaxis: {
+
+                                }, xaxis: {
+                                        show: true,
+                                        mode: "time",
+                                        timezone: "browser",
+                                        min: (new Date(parseInt(dateVal[0]), parseInt(dateVal[1]) - 1, parseInt(dateVal[2]), parseInt(dateVal[3]), parseInt(dateVal[4]))).getTime(),
+                                        max: (new Date(parseInt(dateVal[0]), parseInt(dateVal[1]) - 1, parseInt(dateVal[2] + 20), parseInt(dateVal[3]), parseInt(dateVal[4]))).getTime()
+                                }, grid: {
+                                        hoverable: true
+                                }
+                        });
+                        var yaxisLabel = $("<div class='axisLabel yaxisLabel'></div>").text("Wind Speed (km/h)").appendTo("#placeholder_4");
+                        yaxisLabel.css("margin-top", yaxisLabel.width() / 2 - 10);
+
+                        var xaxisLabel = $("<div class='axisLabel xaxisLabel xaxisLabel_1'></div>").text("Zaman (Saat / Gün)").appendTo("#placeholder_4");
+                        xaxisLabel.css("margin-top", $("#placeholder_4").height() / 2);
+                        xaxisLabel.css("margin-left", $("#placeholder_4").width() / 2 - 20);
+
+
+					
+	        },
+		        error: function() {
+	        		alert('Error occured');
+        		}
+                });	
+
+}

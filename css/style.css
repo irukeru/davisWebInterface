@@ -1,0 +1,114 @@
+body {
+    background: none repeat scroll 0 0 #000000;
+    margin-left: auto;
+    margin-right: auto;
+    width: 95%;
+}
+.content {
+    margin-top: 10px;
+}
+.left-data_table {
+    color: #ffffff;
+    float: left;
+    height: 450px;
+    min-width: 290px;
+}
+.left-data_table .meteoDataTable {
+    width: 100%;
+}
+.left-data_table .meteoDataTable thead {
+    font-size: 20px;
+    height: 40px;
+}
+.left-data_table .meteoDataTable tbody tr {
+    height: 30px;
+}
+.left-data_table .meteoDataTable tr td {
+    text-align: center;
+}
+.left-container {
+    background: linear-gradient(#f6f6f6 0px, #fff 50px) repeat scroll 0 0 rgba(0, 0, 0, 0);
+    border: 1px solid #ddd;
+    box-shadow: 0 3px 10px rgba(0, 0, 0, 0.15);
+    box-sizing: border-box;
+    height: 500px;
+    margin: 15px auto 30px 320px;
+    min-width: 200px;
+    padding: 20px 15px 15px;
+}
+.center_data_big {
+    height: 500px;
+    margin-left: auto;
+    margin-right: auto;
+    width: 95%;
+}
+.demo-placeholder {
+    float: left;
+    font-size: 14px;
+    height: 40%;
+    line-height: 1.2em;
+    width: 50%;
+}
+.legend table {
+    border-spacing: 5px;
+}
+.left_data {
+    float: left;
+    height: 460px;
+    width: 250px;
+}
+.left_data_big {
+    float: left;
+    height: 500px;
+    width: 780px;
+}
+.topMargin {
+    margin-top: 100px;
+}
+.midTopMargin {
+    margin-top: 10px;
+}
+.tug-button {
+    background-color: #5cb85c;
+    border-color: #cccccc;
+    border-radius: 4px;
+    color: #ffffff;
+    font-size: 16px;
+    margin-left: 10px;
+    margin-top: 10px;
+    min-width: 120px;
+    padding: 10px 16px;
+}
+.tug-button:hover, .tug-button:focus {
+    background: none repeat scroll 0 0 rgba(92, 184, 92, 0.5);
+    color: #333333;
+    text-decoration: none;
+}
+#ajax_form {
+    margin: 28px;
+}
+#ajax_form .button_wrapper {
+    margin-top: 24px;
+}
+#ajax_form .button_spacer {
+    display: inline-block;
+    width: 20px;
+}
+.axisLabel {
+    font-size: 12px;
+    position: absolute;
+    text-align: center;
+}
+.yaxisLabel {
+    left: -14px;
+    top: 50%;
+    transform: rotate(-90deg);
+    transform-origin: 0 0 0;
+}
+.xaxisLabel {
+    top: 50%;
+}
+.ie7 .yaxisLabel, .ie8 .yaxisLabel {
+    font-size: 36px;
+    top: 40%;
+}
