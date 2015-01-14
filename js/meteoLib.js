@@ -310,3 +310,21 @@ function getDataGraphWithTime(timeVar) {
                 });	
 
 }
+
+
+/*
+ * Mathematical model from http://www.nws.noaa.gov/om/winter/windchill.shtml
+ *
+ * American National Weather Service
+ */
+function getWindChill(temperature, windSpeed) {
+	temperature = temperature * (9.0 / 5.0) + 32;
+
+	windSpeed = windSpeed / 1.609344;
+
+	windChill = 35.74 + 0.6215 * temperature - 35.75 * Math.pow(windSpeed, 0.16) + 0.4275 * Math.pow(windSpeed, 0.16) * temperature;
+
+	windChill = (windChill - 32) * (5.0 / 9.0);
+
+	return windChill;
+}

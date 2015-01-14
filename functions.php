@@ -4,6 +4,7 @@
 		$database =  new SQLite3("/home/pi/database/davisMeteoDatabase.db");
 
 		$sql = "SELECT * FROM davisWeeklyData WHERE date > 20141215101010";
+//		$sql = "SELECT * FROM davisMonthlyData WHERE date > 20141215101010";
 
 		$results = $database->query($sql);
 
