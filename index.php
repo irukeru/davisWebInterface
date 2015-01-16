@@ -19,26 +19,7 @@
 		<script src="js/jquery.flot.resize.js"></script>
 		<script src="js/meteoLib.js"></script>
 		<script src="js/jquery.flot.time.js"></script>
-
-		<!-- Add mousewheel plugin (this is optional) -->
-		<script type="text/javascript" src="lib/jquery.mousewheel-3.0.6.pack.js"></script>
-
-		<!-- Add fancyBox main JS and CSS files -->
-		<script type="text/javascript" src="source/jquery.fancybox.js?v=2.1.5"></script>
-		<link rel="stylesheet" type="text/css" href="source/jquery.fancybox.css?v=2.1.5" media="screen" />
-
-		<!-- Add Button helper (this is optional) -->
-		<link rel="stylesheet" type="text/css" href="source/helpers/jquery.fancybox-buttons.css?v=1.0.5" />
-		<script type="text/javascript" src="source/helpers/jquery.fancybox-buttons.js?v=1.0.5"></script>
-
-		<!-- Add Thumbnail helper (this is optional) -->
-		<link rel="stylesheet" type="text/css" href="source/helpers/jquery.fancybox-thumbs.css?v=1.0.7" />
-		<script type="text/javascript" src="source/helpers/jquery.fancybox-thumbs.js?v=1.0.7"></script>
-
-		<!-- Add Media helper (this is optional) -->
-		<script type="text/javascript" src="source/helpers/jquery.fancybox-media.js?v=1.0.6"></script>		
-		
-		
+		<script language="javascript" type="text/javascript" src="js/jquery.flot.navigate.js"></script>
 
 		<title>Physics Dept. Meteo Monitor</title>
 
@@ -103,11 +84,73 @@
 				<br>
 				<div id="placeholder_2" class="demo-placeholder" style="margin-top: 20px;"></div>
 				<div id="placeholder_4" class="demo-placeholder" style="margin-top: 20px"></div>
+				<br>
+				<div id="placeholder_5" class="demo-placeholder" style="margin-top: 20px;"></div>
+				<div id="placeholder_6" class="demo-placeholder" style="margin-top: 20px"></div>
 			</div>
 		</div>
 	</div>
 	<script type="text/javascript">
 		timedRefresh();
+
+		$(function() {
+
+			$("#placeholder_1").bind("plotpan", function (event, plot) {
+				var axes = plot.getAxes();
+//				var message = "Panning to x: "  + axes.xaxis.min.toFixed(2) + " &ndash; " + axes.xaxis.max.toFixed(2) + " and y: " + axes.yaxis.min.toFixed(2)+ " &ndash; " + axes.yaxis.max.toFixed(2);
+
+//				console.log(message);
+				console.log("place_1");
+			});
+
+
+			$("#placeholder_2").bind("plotpan", function (event, plot) {
+				var axes = plot.getAxes();
+//				var message = "Panning to x: "  + axes.xaxis.min.toFixed(2) + " &ndash; " + axes.xaxis.max.toFixed(2) + " and y: " + axes.yaxis.min.toFixed(2)+ " &ndash; " + axes.yaxis.max.toFixed(2);
+
+//				console.log(message);
+				console.log("place_2");
+			});
+
+
+			$("#placeholder_3").bind("plotpan", function (event, plot) {
+				var axes = plot.getAxes();
+//				var message = "Panning to x: "  + axes.xaxis.min.toFixed(2) + " &ndash; " + axes.xaxis.max.toFixed(2) + " and y: " + axes.yaxis.min.toFixed(2)+ " &ndash; " + axes.yaxis.max.toFixed(2);
+
+//				console.log(message);
+				console.log("place_3");
+
+			});
+
+
+			$("#placeholder_4").bind("plotpan", function (event, plot) {
+				var axes = plot.getAxes();
+//				var message = "Panning to x: "  + axes.xaxis.min.toFixed(2) + " &ndash; " + axes.xaxis.max.toFixed(2) + " and y: " + axes.yaxis.min.toFixed(2)+ " &ndash; " + axes.yaxis.max.toFixed(2);
+
+//				console.log(message);
+				console.log("plage_4");
+			});
+
+
+			$("#placeholder_5").bind("plotpan", function (event, plot) {
+				var axes = plot.getAxes();
+//				var message = "Panning to x: "  + axes.xaxis.min.toFixed(2) + " &ndash; " + axes.xaxis.max.toFixed(2) + " and y: " + axes.yaxis.min.toFixed(2)+ " &ndash; " + axes.yaxis.max.toFixed(2);
+
+//				console.log(message);
+				console.log("placee_5");
+			});
+
+
+			$("#placeholder_6").bind("plotpan", function (event, plot) {
+				var axes = plot.getAxes();
+//				var message = "Panning to x: "  + axes.xaxis.min.toFixed(2) + " &ndash; " + axes.xaxis.max.toFixed(2) + " and y: " + axes.yaxis.min.toFixed(2)+ " &ndash; " + axes.yaxis.max.toFixed(2);
+
+//				console.log(message);
+				console.log("place_6");
+			});
+
+		});
+
 	</script>
 
 </body>

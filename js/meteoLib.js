@@ -203,7 +203,7 @@ function getDataGraphWithTime(timeVar) {
    			dateVal = getTime(data[0][3]);
 			dateValSwap = getTime(clientTime);
 
-   			resultData = [ { data: result, points: { symbol: "circle", radius : 1.5 }, color: "#FF0000"} ];
+   			resultData = [ { data: result, points: { symbol: "circle", radius : 1.0 }, color: "#FF0000"} ];
 	   		console.log(result.length);
 			var plot = $.plot("#placeholder_1", resultData , {
 				points: {
@@ -220,7 +220,9 @@ function getDataGraphWithTime(timeVar) {
 //					max: (new Date()).getTime()
 				}, grid: {
 					hoverable: true
-				}
+				}, pan: {
+                                        interactive: true
+                                }
 			});	
 			var yaxisLabel = $("<div class='axisLabel yaxisLabel'></div>").text("Sıcaklık (Celcius)").appendTo("#placeholder_1");
 			yaxisLabel.css("margin-top", yaxisLabel.width() / 2 - 10);
@@ -229,7 +231,7 @@ function getDataGraphWithTime(timeVar) {
 			xaxisLabel.css("margin-top", $("#placeholder_1").height() / 2);
 			xaxisLabel.css("margin-left", $("#placeholder_1").width() / 2 - 20);
 
-   			resultData = [ { data: resultHum, points: { symbol: "circle", radius : 1.0 }, label: "Hummidity : " + data[i-1][1] + " %"} ];
+   			resultData = [ { data: resultHum, points: { symbol: "circle", radius : 1.0 }, color: "#FF0000"} ];
                         var plot = $.plot("#placeholder_3", resultData , {
                                 points: {
                                         show: true,
@@ -244,6 +246,8 @@ function getDataGraphWithTime(timeVar) {
                                         max: (new Date(parseInt(dateVal[0]), parseInt(dateVal[1]) - 1, parseInt(dateVal[2] + 20), parseInt(dateVal[3]), parseInt(dateVal[4]))).getTime()
                                 }, grid: {
                                         hoverable: true
+                                }, pan: {
+                                        interactive: true
                                 }
                         });
                         var yaxisLabel = $("<div class='axisLabel yaxisLabel'></div>").text("Hum. (%)").appendTo("#placeholder_3");
@@ -253,7 +257,7 @@ function getDataGraphWithTime(timeVar) {
                         xaxisLabel.css("margin-top", $("#placeholder_3").height() / 2);
                         xaxisLabel.css("margin-left", $("#placeholder_3").width() / 2 - 20);
 
-   			resultData = [ { data: resultPress, points: { symbol: "circle", radius : 1.0 }, label: "Pressure : " + data[i-1][2] + " mBar"} ];
+   			resultData = [ { data: resultPress, points: { symbol: "circle", radius : 1.0 }, color: "#FF0000"} ];
                         var plot = $.plot("#placeholder_2", resultData , {
                                 points: {
                                         show: true,
@@ -268,6 +272,8 @@ function getDataGraphWithTime(timeVar) {
                                         max: (new Date(parseInt(dateVal[0]), parseInt(dateVal[1]) - 1, parseInt(dateVal[2] + 20), parseInt(dateVal[3]), parseInt(dateVal[4]))).getTime()
                                 }, grid: {
                                         hoverable: true
+                                }, pan: {
+                                        interactive: true
                                 }
                         });
                         var yaxisLabel = $("<div class='axisLabel yaxisLabel'></div>").text("Pressure (mBar)").appendTo("#placeholder_2");
@@ -277,7 +283,7 @@ function getDataGraphWithTime(timeVar) {
                         xaxisLabel.css("margin-top", $("#placeholder_2").height() / 2);
                         xaxisLabel.css("margin-left", $("#placeholder_2").width() / 2 - 20);
 
-                        resultData = [ { data: resultWindSpeed, points: { symbol: "circle", radius : 1.0 }, label: "Wind Speed : " + data[i-1][4] + " km/h"} ];
+                        resultData = [ { data: resultWindSpeed, points: { symbol: "circle", radius : 1.0 }, color: "#FF0000"} ];
                         var plot = $.plot("#placeholder_4", resultData , {
                                 points: {
                                         show: true,
@@ -292,6 +298,8 @@ function getDataGraphWithTime(timeVar) {
                                         max: (new Date(parseInt(dateVal[0]), parseInt(dateVal[1]) - 1, parseInt(dateVal[2] + 20), parseInt(dateVal[3]), parseInt(dateVal[4]))).getTime()
                                 }, grid: {
                                         hoverable: true
+                                }, pan: {
+                                        interactive: true
                                 }
                         });
                         var yaxisLabel = $("<div class='axisLabel yaxisLabel'></div>").text("Wind Speed (km/h)").appendTo("#placeholder_4");
@@ -301,7 +309,58 @@ function getDataGraphWithTime(timeVar) {
                         xaxisLabel.css("margin-top", $("#placeholder_4").height() / 2);
                         xaxisLabel.css("margin-left", $("#placeholder_4").width() / 2 - 20);
 
+                        resultData = [ { data: resultWindSpeed, points: { symbol: "circle", radius : 1.0 }, color: "#FF0000"} ];
+                        var plot = $.plot("#placeholder_5", resultData , {
+                                points: {
+                                        show: true,
+                                        radius: 1
+                                }, yaxis: {
 
+                                }, xaxis: {
+                                        show: true,
+                                        mode: "time",
+                                        timezone: "browser",
+                                        min: (new Date(parseInt(dateVal[0]), parseInt(dateVal[1]) - 1, parseInt(dateVal[2]), parseInt(dateVal[3]), parseInt(dateVal[4]))).getTime(),
+                                        max: (new Date(parseInt(dateVal[0]), parseInt(dateVal[1]) - 1, parseInt(dateVal[2] + 20), parseInt(dateVal[3]), parseInt(dateVal[4]))).getTime()
+                                }, grid: {
+                                        hoverable: true
+                                }, pan: {
+                                        interactive: true
+                                }
+                        });
+                        var yaxisLabel = $("<div class='axisLabel yaxisLabel'></div>").text("Wind Speed (km/h)").appendTo("#placeholder_5");
+                        yaxisLabel.css("margin-top", yaxisLabel.width() / 2 - 10);
+
+                        var xaxisLabel = $("<div class='axisLabel xaxisLabel xaxisLabel_1'></div>").text("Zaman (Saat / Gün)").appendTo("#placeholder_5");
+                        xaxisLabel.css("margin-top", $("#placeholder_5").height() / 2);
+                        xaxisLabel.css("margin-left", $("#placeholder_5").width() / 2 - 20);
+
+
+
+                        resultData = [ { data: resultWindSpeed, points: { symbol: "circle", radius : 1.0 }, color: "#FF0000"} ];
+                        var plot = $.plot("#placeholder_6", resultData , {
+                                points: {
+                                        show: true
+                                }, yaxis: {
+
+                                }, xaxis: {
+                                        show: true,
+                                        mode: "time",
+                                        timezone: "browser",
+                                        min: (new Date(parseInt(dateVal[0]), parseInt(dateVal[1]) - 1, parseInt(dateVal[2]), parseInt(dateVal[3]), parseInt(dateVal[4]))).getTime(),
+                                        max: (new Date(parseInt(dateVal[0]), parseInt(dateVal[1]) - 1, parseInt(dateVal[2] + 20), parseInt(dateVal[3]), parseInt(dateVal[4]))).getTime()
+                                }, grid: {
+                                        hoverable: true
+				}, pan: {
+					interactive: true
+				}
+                        });
+                        var yaxisLabel = $("<div class='axisLabel yaxisLabel'></div>").text("Wind Speed (km/h)").appendTo("#placeholder_6");
+                        yaxisLabel.css("margin-top", yaxisLabel.width() / 2 - 10);
+
+                        var xaxisLabel = $("<div class='axisLabel xaxisLabel xaxisLabel_1'></div>").text("Zaman (Saat / Gün)").appendTo("#placeholder_6");
+                        xaxisLabel.css("margin-top", $("#placeholder_6").height() / 2);
+                        xaxisLabel.css("margin-left", $("#placeholder_6").width() / 2 - 20);
 					
 	        },
 		        error: function() {
