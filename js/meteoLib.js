@@ -5,7 +5,13 @@ host = pathArray[2];
 url = protocol + '//' + host;
 dateArray = [];
 delayValue = 100000;
-var sampleDateVar =  72000;// sec for hour
+var sampleDateVar =  1600;// sec for hour
+
+
+var resultTemp = [];
+var resultHum = [];
+var resultPress = [];
+var resultWindSpeed = [];
 
 /*
 $( document ).ready(function(){
@@ -133,13 +139,9 @@ function getFloatTime() {
 	return floatTime; 	
 }
 
-function getDataGraphWithTime(timeVar) {
-		sampleDateVar = timeVar;
+function getNewData(timeVar) {
+        sampleDateVar = timeVar;
         var request, response;
-        var result = [];
-	var resultHum = [];
-	var resultPress = [];
-	var resultWindSpeed = [];
 
         var newUrl = '/getGraphWithTime.php?value=' + timeVar;
         var data =  $.ajax({
@@ -147,13 +149,56 @@ function getDataGraphWithTime(timeVar) {
                 data: request,
                 dataType: "json",
                 method: "post",
-				async: false,
-      	 	success: function(data) {
+                async: false,
+                success: function(data) {
+
+                        var i = 0;
+
+                        if (data == false) {
+                                document.getElementById( "sqmStatus" ).innerHTML  = "<font color = \"green\" size = \"6\">Status   :  No data to display</font>";
+                                return;
+                        }
+
+                        var averageTemp = 0;
+                        var averageHum = 0;
+                        var averagePress = 0;
+                        var averageWindSpeed = 0;
+
+                        for(i; i < data.length; i++) {
+                                resultTemp.push([toMilSec(data[i][3]), parseFloat(data[i][0])]);
+                                resultHum.push([toMilSec(data[i][3]), parseFloat(data[i][1])]);
+                                resultPress.push([toMilSec(data[i][3]), parseFloat(data[i][2])]);
+                                resultWindSpeed.push([toMilSec(data[i][3]), parseFloat(data[i][4])]);
+                                averageTemp = parseFloat(averageTemp) + parseFloat(data[i][0]);
+                                averageHum = parseFloat(averageHum) + parseFloat(data[i][1]);
+                                averagePress = parseFloat(averagePress) + parseFloat(data[i][2]);
+                                averageWindSpeed = parseFloat(averageWindSpeed) + parseFloat(data[i][4]);
+                        }
+
+                },
+                        error: function() {
+                                alert('Error occured');
+                        }
+                });
+}
+
+
+function getDataGraphWithTime(timeVar) {
+	sampleDateVar = timeVar;
+	var request, response;
+
+        var newUrl = '/getGraphWithTime.php?value=' + timeVar;
+        var data =  $.ajax({
+                url: newUrl,
+                data: request,
+                dataType: "json",
+                method: "post",
+		async: false,
+   	 	success: function(data) {
 			
 			var i = 0;
 			
 			if (data == false) {
-				document.getElementById( "sqmStatus" ).innerHTML  = "<font color = \"green\" size = \"6\">Status   :  No data to display</font>";
 				return;
 			}
 			
@@ -163,7 +208,7 @@ function getDataGraphWithTime(timeVar) {
 			var averageWindSpeed = 0;
 
 	   		for(i; i < data.length; i++) {
-   				result.push([toMilSec(data[i][3]), parseFloat(data[i][0])]);
+   				resultTemp.push([toMilSec(data[i][3]), parseFloat(data[i][0])]);
 				resultHum.push([toMilSec(data[i][3]), parseFloat(data[i][1])]);
 				resultPress.push([toMilSec(data[i][3]), parseFloat(data[i][2])]);
 				resultWindSpeed.push([toMilSec(data[i][3]), parseFloat(data[i][4])]);
@@ -203,8 +248,8 @@ function getDataGraphWithTime(timeVar) {
    			dateVal = getTime(data[0][3]);
 			dateValSwap = getTime(clientTime);
 
-   			resultData = [ { data: result, points: { symbol: "circle", radius : 1.0 }, color: "#FF0000"} ];
-	   		console.log(result.length);
+   			resultData = [ { data: resultTemp, points: { symbol: "circle", radius : 1.0 }, color: "#FF0000"} ];
+
 			var plot = $.plot("#placeholder_1", resultData , {
 				points: {
 					show: true,
@@ -215,16 +260,15 @@ function getDataGraphWithTime(timeVar) {
 					show: true,
 					mode: "time",
 					timezone: "browser",
-					min: (new Date(parseInt(dateVal[0]), parseInt(dateVal[1]) - 1, parseInt(dateVal[2]), parseInt(dateVal[3]), parseInt(dateVal[4]))).getTime(),
-					max: (new Date(parseInt(dateVal[0]), parseInt(dateVal[1]) - 1, parseInt(dateVal[2] + 20), parseInt(dateVal[3]), parseInt(dateVal[4]))).getTime()
-//					max: (new Date()).getTime()
+					min : (new Date((new Date).getTime()-1000*60*60*24*7 * 2)).getTime(),
+					max: (new Date()).getTime()
 				}, grid: {
 					hoverable: true
 				}, pan: {
                                         interactive: true
                                 }
 			});	
-			var yaxisLabel = $("<div class='axisLabel yaxisLabel'></div>").text("Sıcaklık (Celcius)").appendTo("#placeholder_1");
+			var yaxisLabel = $("<div class='axisLabel yaxisLabel'></div>").text("Temperature (Celcius)").appendTo("#placeholder_1");
 			yaxisLabel.css("margin-top", yaxisLabel.width() / 2 - 10);
 			
 			var xaxisLabel = $("<div class='axisLabel xaxisLabel xaxisLabel_1'></div>").text("Zaman (Saat / Gün)").appendTo("#placeholder_1");
@@ -386,4 +430,34 @@ function getWindChill(temperature, windSpeed) {
 	windChill = (windChill - 32) * (5.0 / 9.0);
 
 	return windChill;
+}
+
+
+function updateTempGraph() {
+	resultData = [ { data: resultTemp, points: { symbol: "circle", radius : 1.0 }, color: "#FF0000"} ];
+
+        var plot = $.plot("#placeholder_1", resultData , {
+                                points: {
+                                        show: true,
+                                        radius: 1
+                                }, yaxis: {
+
+                                }, xaxis: {
+                                        show: true,
+                                        mode: "time",
+                                        timezone: "browser",
+                                        min : (new Date((new Date).getTime()-1000*60*60*24*7 * 2)).getTime(),
+                                        max: (new Date()).getTime()
+                                }, grid: {
+                                        hoverable: true
+                                }, pan: {
+                                        interactive: true
+                                }
+                        });
+                        var yaxisLabel = $("<div class='axisLabel yaxisLabel'></div>").text("Temperature (Celcius)").appendTo("#placeholder_1");
+                        yaxisLabel.css("margin-top", yaxisLabel.width() / 2 - 10);
+
+                        var xaxisLabel = $("<div class='axisLabel xaxisLabel xaxisLabel_1'></div>").text("Zaman (Saat / Gün)").appendTo("#placeholder_1");
+                        xaxisLabel.css("margin-top", $("#placeholder_1").height() / 2);
+                        xaxisLabel.css("margin-left", $("#placeholder_1").width() / 2 - 20);
 }

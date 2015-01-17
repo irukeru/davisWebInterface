@@ -97,9 +97,18 @@
 
 			$("#placeholder_1").bind("plotpan", function (event, plot) {
 				var axes = plot.getAxes();
-//				var message = "Panning to x: "  + axes.xaxis.min.toFixed(2) + " &ndash; " + axes.xaxis.max.toFixed(2) + " and y: " + axes.yaxis.min.toFixed(2)+ " &ndash; " + axes.yaxis.max.toFixed(2);
+				var message = "Panning to x: "  + axes.xaxis.min.toFixed(2)
+					    + " &ndash; " + axes.xaxis.max.toFixed(2)
+					    + " and y: " + axes.yaxis.min.toFixed(2)
+					    + " &ndash; " + axes.yaxis.max.toFixed(2);
 
-//				console.log(message);
+				var currentDate = (new Date()).getTime();
+
+				var dif = Math.round(Math.round(currentDate / 1000000) - Math.round(axes.xaxis.min.toFixed(2)) / 1000000);
+
+				console.log("dif : " + dif);
+
+				console.log(message);
 				console.log("place_1");
 			});
 
