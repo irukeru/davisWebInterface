@@ -92,26 +92,53 @@
 	</div>
 	<script type="text/javascript">
 		timedRefresh();
+		var updateTempGraphVar = false;
 
 		$(function() {
 
 			$("#placeholder_1").bind("plotpan", function (event, plot) {
 				var axes = plot.getAxes();
-				var message = "Panning to x: "  + axes.xaxis.min.toFixed(2)
-					    + " &ndash; " + axes.xaxis.max.toFixed(2)
-					    + " and y: " + axes.yaxis.min.toFixed(2)
-					    + " &ndash; " + axes.yaxis.max.toFixed(2);
 
 				var currentDate = (new Date()).getTime();
 
 				var dif = Math.round(Math.round(currentDate / 1000000) - Math.round(axes.xaxis.min.toFixed(2)) / 1000000);
 
-				console.log("dif : " + dif);
+				tempGraphXMin = axes.xaxis.min.toFixed(2);
+				tempGraphXMax = axes.xaxis.max.toFixed(2);
+//				console.log(sampleDateVar + " - " +dif);
 
-				console.log(message);
-				console.log("place_1");
+				if (updateTempGraphVar == false) {
+					if ((sampleDateVar / 2) < dif) {
+						sampleDateVar += 800;
+						updateTempGraphVar = true;
+						getNewData(sampleDateVar);
+						console.log("is it finished ?");
+						updateTempGraphVar = false;
+					}
+				}
 			});
 
+                        $("#placeholder_1").bind("plotzoom", function (event, plot) {
+                                var axes = plot.getAxes();
+
+                                var currentDate = (new Date()).getTime();
+
+                                var dif = Math.round(Math.round(currentDate / 1000000) - Math.round(axes.xaxis.min.toFixed(2)) / 1000000);
+
+                                tempGraphXMin = axes.xaxis.min.toFixed(2);
+                                tempGraphXMax = axes.xaxis.max.toFixed(2);
+//                              console.log(sampleDateVar + " - " +dif);
+
+                                if (updateTempGraphVar == false) {
+                                        if ((sampleDateVar / 2) < dif) {
+                                                sampleDateVar += 800;
+                                                updateTempGraphVar = true;
+                                                getNewData(sampleDateVar);
+                                                console.log("is it finished ?");
+                                                updateTempGraphVar = false;
+                                        }
+                                }
+                        });
 
 			$("#placeholder_2").bind("plotpan", function (event, plot) {
 				var axes = plot.getAxes();

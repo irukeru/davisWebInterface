@@ -7,13 +7,11 @@ dateArray = [];
 delayValue = 100000;
 var sampleDateVar =  1600;// sec for hour
 
+
 var resultTemp = [];
 var resultHum = [];
 var resultPress = [];
 var resultWindSpeed = [];
-
-var tempGraphXMin = 0;
-var tempGraphXMax = 0;
 
 /*
 $( document ).ready(function(){
@@ -145,7 +143,7 @@ function getNewData(timeVar) {
         sampleDateVar = timeVar;
         var request, response;
 
-        var newUrl = '/getGraphWithTimeAndColm.php?value=' + timeVar + '&data=outsideTemperature';
+        var newUrl = '/getGraphWithTime.php?value=' + timeVar;
         var data =  $.ajax({
                 url: newUrl,
                 data: request,
@@ -157,16 +155,25 @@ function getNewData(timeVar) {
                         var i = 0;
 
                         if (data == false) {
+                                document.getElementById( "sqmStatus" ).innerHTML  = "<font color = \"green\" size = \"6\">Status   :  No data to display</font>";
                                 return;
                         }
 
                         var averageTemp = 0;
+                        var averageHum = 0;
+                        var averagePress = 0;
+                        var averageWindSpeed = 0;
 
                         for(i; i < data.length; i++) {
-                                resultTemp.push([toMilSec(data[i][1]), parseFloat(data[i][0])]);
+                                resultTemp.push([toMilSec(data[i][3]), parseFloat(data[i][0])]);
+                                resultHum.push([toMilSec(data[i][3]), parseFloat(data[i][1])]);
+                                resultPress.push([toMilSec(data[i][3]), parseFloat(data[i][2])]);
+                                resultWindSpeed.push([toMilSec(data[i][3]), parseFloat(data[i][4])]);
                                 averageTemp = parseFloat(averageTemp) + parseFloat(data[i][0]);
+                                averageHum = parseFloat(averageHum) + parseFloat(data[i][1]);
+                                averagePress = parseFloat(averagePress) + parseFloat(data[i][2]);
+                                averageWindSpeed = parseFloat(averageWindSpeed) + parseFloat(data[i][4]);
                         }
-			updateTempGraph();
 
                 },
                         error: function() {
@@ -241,26 +248,20 @@ function getDataGraphWithTime(timeVar) {
    			dateVal = getTime(data[0][3]);
 			dateValSwap = getTime(clientTime);
 
-   			resultData = [ { data: resultTemp, points: { symbol: "circle", radius : 0.8 }, color: "#FF0000"} ];
-
-			if (tempGraphXMin == 0) {
-				tempGraphXMin = (new Date((new Date).getTime()-1000*60*60*24 * 3)).getTime();
-				tempGraphXMax = (new Date()).getTime();
-			}
+   			resultData = [ { data: resultTemp, points: { symbol: "circle", radius : 1.0 }, color: "#FF0000"} ];
 
 			var plot = $.plot("#placeholder_1", resultData , {
 				points: {
 					show: true,
 					radius: 1
 				}, yaxis: {
-					panRange: false,
-					zoomRange: false
+
 				}, xaxis: {
 					show: true,
 					mode: "time",
 					timezone: "browser",
-					min : tempGraphXMin,
-					max: tempGraphXMax
+					min : (new Date((new Date).getTime()-1000*60*60*24*7 * 2)).getTime(),
+					max: (new Date()).getTime()
 				}, grid: {
 					hoverable: true
 				}, pan: {
@@ -269,7 +270,6 @@ function getDataGraphWithTime(timeVar) {
 					interactive: true
 				}
 			});	
-
 			var yaxisLabel = $("<div class='axisLabel yaxisLabel'></div>").text("Temperature (Celcius)").appendTo("#placeholder_1");
 			yaxisLabel.css("margin-top", yaxisLabel.width() / 2 - 10);
 			
@@ -434,44 +434,28 @@ function getWindChill(temperature, windSpeed) {
 	return windChill;
 }
 
-function maxColm(array, n) {	
-	return (Math.max.apply(Math, array.map(function(i) {
-	    return i[n];
-	})));
-}
-
-function minColm(array, n) {	
-	return (Math.min.apply(Math, array.map(function(i) {
-	    return i[n];
-	})));
-}
-
 
 function updateTempGraph() {
-                        resultData = [ { data: resultTemp, points: { symbol: "circle", radius : 0.8 }, color: "#FF0000"} ];
+	resultData = [ { data: resultTemp, points: { symbol: "circle", radius : 1.0 }, color: "#FF0000"} ];
 
-                        var plot = $.plot("#placeholder_1", resultData , {
+        var plot = $.plot("#placeholder_1", resultData , {
                                 points: {
                                         show: true,
                                         radius: 1
                                 }, yaxis: {
-                                        panRange: false,
-                                        zoomRange: false
+
                                 }, xaxis: {
                                         show: true,
                                         mode: "time",
                                         timezone: "browser",
-                                        min : tempGraphXMin,
-                                        max: tempGraphXMax
+                                        min : (new Date((new Date).getTime()-1000*60*60*24*7 * 2)).getTime(),
+                                        max: (new Date()).getTime()
                                 }, grid: {
                                         hoverable: true
                                 }, pan: {
                                         interactive: true
-                                }, zoom: {
-                                        interactive: true
                                 }
                         });
-
                         var yaxisLabel = $("<div class='axisLabel yaxisLabel'></div>").text("Temperature (Celcius)").appendTo("#placeholder_1");
                         yaxisLabel.css("margin-top", yaxisLabel.width() / 2 - 10);
 

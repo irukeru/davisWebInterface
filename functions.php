@@ -7,7 +7,7 @@
 
 		$yesterday = date('YmdHis', strtotime('-'.$day.' day'));
 
-		$sql = "SELECT * FROM davisWeeklyData WHERE date > ".$yesterday;
+		$sql = "SELECT * FROM davisMonthlyData WHERE date > ".$yesterday;
 
 		$results = $database->query($sql);
 
@@ -27,5 +27,30 @@
 		else
 			return $result;
 	}
+
+        function getSpecDataFromSQLColm($num, $colm) {
+                $database =  new SQLite3("/home/pi/database/davisMeteoDatabase.db");
+
+                $day = round($num / 80);
+
+                $yesterday = date('YmdHis', strtotime('-'.$day.' day'));
+
+                $sql = "SELECT " . $colm .  ", date FROM davisMonthlyData WHERE date > ".$yesterday;
+
+                $results = $database->query($sql);
+
+                $result = array();
+                $k = 0;
+
+                while ($row = $results->fetchArray()) {
+                        $result[$k][0] = $row[$colm];
+                        $result[$k++][1] = $row['date'];
+                }
+
+                if (count($results) == 0)
+                        return "false";
+                else
+                        return $result;
+        }
 
 ?>
